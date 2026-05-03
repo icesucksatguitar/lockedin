@@ -1,0 +1,47 @@
+@import url('https://fonts.cdnfonts.com/css/valorant');
+
+:root {
+  font-family: 'VALORANT', sans-serif;
+  color: #ffffff;
+  background: #000000;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #000000;
+  overflow: hidden;
+  cursor: none;
+  user-select: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+a,
+[role='button'] {
+  cursor: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+#root {
+  min-height: 100svh;
+}

@@ -108,7 +108,7 @@
 }
 
 .ai-overlay--centered.ai-overlay--closing {
-  animation: ai-fold-centered 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: ai-fold-centered 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .ai-overlay__header {
@@ -191,8 +191,11 @@
 }
 
 @keyframes ai-fold-centered {
-  0% { transform: translate(-50%, -50%) scaleX(1) scaleY(1); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scaleX(0) scaleY(0.02); opacity: 0; }
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: blur(0px); }
+  20% { transform: translate(-52%, -50%) skewX(10deg); opacity: 0.8; filter: blur(2px) brightness(1.5); border-color: white; }
+  40% { transform: translate(-48%, -50%) skewX(-10deg); opacity: 0.6; filter: blur(4px) brightness(2); background: rgba(255, 255, 255, 0.2); }
+  60% { transform: translate(-50%, -50%) scaleY(0.01) scaleX(1.2); opacity: 1; filter: brightness(3); background: white; }
+  100% { transform: translate(-50%, -50%) scaleY(0.01) scaleX(0); opacity: 0; }
 }
 
 @keyframes ai-typewriter {

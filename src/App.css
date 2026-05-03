@@ -829,6 +829,11 @@
   inset: 0;
   z-index: 50;
   pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .global-warnings--closing .sci-fi-warning {
@@ -837,21 +842,20 @@
 
 .sci-fi-warning {
   position: absolute;
-  top: 0;
-  left: 0;
-  background: rgba(20, 0, 0, 0.65);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 57, 57, 0.4);
-  border-left: 3px solid #ff3939;
-  padding: 0.6rem 1rem;
+  background: rgba(30, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 57, 57, 0.5);
+  border-left: 4px solid #ff3939;
+  padding: 1rem 2.5rem;
+  width: min(500px, 90vw);
+  text-align: center;
   color: #ff3939;
   font-family: 'Courier New', Courier, monospace;
-  box-shadow: 0 0 15px rgba(255, 57, 57, 0.2);
-  transform-origin: top left;
-  animation: 
-    warning-unfold 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards,
-    warning-float 4s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(255, 57, 57, 0.2);
+  transform-origin: center center;
+  animation: warning-unfold 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   pointer-events: none;
+  opacity: 0; /* Starts hidden until delay hits */
 }
 
 .sci-fi-warning--hidden {

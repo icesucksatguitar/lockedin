@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useMemo } from 'react'
 import type { CinematicPhase } from './App'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
@@ -439,27 +439,38 @@ function EarthModel({ className, mirrored = false, onDotClick, cinematicPhase }:
 function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPhase }: { onBridgeActivate: () => void, showControls?: boolean, cinematicPhase?: CinematicPhase }) {
   const [activeDot, setActiveDot] = useState<DotDef | null>(null)
 
+  const errorSpam = useMemo(() => {
+    return Array.from({ length: 22 }).map((_, i) => {
+      // Span them over ~18 seconds (from 0s to 18s).
+      const delay = (Math.random() * 18).toFixed(2);
+      // Randomly offset them from the absolute center
+      const offsetX = (Math.random() - 0.5) * 45; // -22.5vw to 22.5vw
+      const offsetY = (Math.random() - 0.5) * 45; // -22.5vh to 22.5vh
+      const entropy = (80 + Math.random() * 19).toFixed(1);
+      
+      return { id: i, delay, offsetX, offsetY, entropy };
+    });
+  }, []);
+
   return (
     <main className="overview-screen">
       {/* Global Anomaly Warnings */}
       {(cinematicPhase === 'anomaly' || cinematicPhase === 'directives') && (
         <div className={`global-warnings ${cinematicPhase === 'directives' ? 'global-warnings--closing' : ''}`}>
-          <div className="sci-fi-warning" style={{ top: '18%', left: '6%', animationDelay: '0s, 0.2s' }}>
-            <div className="sci-fi-warning__glitch">! CRITICAL ANOMALY</div>
-            <div className="sci-fi-warning__details">ENTROPY SPIKE: 84.2%</div>
-          </div>
-          <div className="sci-fi-warning" style={{ top: '28%', left: '4%', animationDelay: '0.1s, 0.5s' }}>
-            <div className="sci-fi-warning__glitch">! CRITICAL ANOMALY</div>
-            <div className="sci-fi-warning__details">ENTROPY SPIKE: 91.5%</div>
-          </div>
-          <div className="sci-fi-warning" style={{ top: '18%', right: '6%', left: 'auto', animationDelay: '0.15s, 0.1s' }}>
-            <div className="sci-fi-warning__glitch">! CRITICAL ANOMALY</div>
-            <div className="sci-fi-warning__details">ENTROPY SPIKE: 77.8%</div>
-          </div>
-          <div className="sci-fi-warning" style={{ top: '28%', right: '4%', left: 'auto', animationDelay: '0.05s, 0.4s' }}>
-            <div className="sci-fi-warning__glitch">! CRITICAL ANOMALY</div>
-            <div className="sci-fi-warning__details">ENTROPY SPIKE: 89.1%</div>
-          </div>
+          {errorSpam.map(err => (
+            <div 
+              key={err.id} 
+              className="sci-fi-warning" 
+              style={{ 
+                animationDelay: `${err.delay}s`,
+                marginTop: `${err.offsetY}vh`,
+                marginLeft: `${err.offsetX}vw`
+              }}
+            >
+              <div className="sci-fi-warning__glitch">! CRITICAL ANOMALY DETECTED</div>
+              <div className="sci-fi-warning__details">ENTROPY SPIKE: {err.entropy}%</div>
+            </div>
+          ))}
         </div>
       )}
 

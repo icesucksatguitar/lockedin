@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import EarthOverviewPage from './EarthOverviewPage'
 import LoadingScreen from './LoadingScreen'
+import Reactor from './Reactor'
+import YearCounter from './YearCounter'
 import './App.css'
 
 type CursorState = {
@@ -10,11 +12,19 @@ type CursorState = {
 }
 
 function App() {
-  const [scene, setScene] = useState<'loader' | 'overview'>('loader')
+  const [scene, setScene] = useState<'loader' | 'overview' | 'yearcounter' | 'reactor'>('loader')
   const [cursor, setCursor] = useState<CursorState>({ x: 0, y: 0, pressed: false })
 
   const handleAdvance = useCallback(() => {
     setScene('overview')
+  }, [])
+
+  const handleBridgeActivate = useCallback(() => {
+    setScene('yearcounter')
+  }, [])
+
+  const handleYearSkip = useCallback(() => {
+    setScene('reactor')
   }, [])
 
   useEffect(() => {
@@ -62,7 +72,10 @@ function App() {
         style={{ left: cursor.x, top: cursor.y }}
         aria-hidden="true"
       />
-      {scene === 'overview' ? <EarthOverviewPage /> : <LoadingScreen onSkip={handleAdvance} />}
+      {scene === 'loader'      && <LoadingScreen onSkip={handleAdvance} />}
+      {scene === 'overview'    && <EarthOverviewPage onBridgeActivate={handleBridgeActivate} />}
+      {scene === 'yearcounter' && <YearCounter onSkip={handleYearSkip} />}
+      {scene === 'reactor'     && <Reactor />}
     </>
   )
 }

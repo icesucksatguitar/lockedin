@@ -1,21 +1,20 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useRef } from 'react'
 import EarthOverviewPage from './EarthOverviewPage'
 import LoadingScreen from './LoadingScreen'
+import NarratorIntro from './NarratorIntro'
 import Reactor from './Reactor'
 import YearCounter from './YearCounter'
 import './App.css'
 
-type CursorState = {
-  x: number
-  y: number
-  pressed: boolean
-}
-
 function App() {
-  const [scene, setScene] = useState<'loader' | 'overview' | 'yearcounter' | 'reactor'>('loader')
-  const [cursor, setCursor] = useState<CursorState>({ x: 0, y: 0, pressed: false })
+  const [scene, setScene] = useState<'loader' | 'intro' | 'overview' | 'yearcounter' | 'reactor'>('loader')
+  const cursorRef = useRef<HTMLSpanElement>(null)
 
   const handleAdvance = useCallback(() => {
+    setScene('intro')
+  }, [])
+
+  const handleIntroComplete = useCallback(() => {
     setScene('overview')
   }, [])
 
@@ -29,34 +28,27 @@ function App() {
 
   useEffect(() => {
     const handlePointerMove = (event: MouseEvent) => {
-      setCursor((current) => ({
-        ...current,
-        x: event.clientX,
-        y: event.clientY,
-      }))
+      if (cursorRef.current) {
+        cursorRef.current.style.left = `${event.clientX}px`
+        cursorRef.current.style.top = `${event.clientY}px`
+      }
     }
 
-    const handlePointerDown = (event: MouseEvent) => {
-      setCursor((current) => ({
-        ...current,
-        x: event.clientX,
-        y: event.clientY,
-        pressed: true,
-      }))
+    const handlePointerDown = () => {
+      if (cursorRef.current) {
+        cursorRef.current.classList.add('custom-cursor--pressed')
+      }
     }
 
-    const handlePointerUp = (event: MouseEvent) => {
-      setCursor((current) => ({
-        ...current,
-        x: event.clientX,
-        y: event.clientY,
-        pressed: false,
-      }))
+    const handlePointerUp = () => {
+      if (cursorRef.current) {
+        cursorRef.current.classList.remove('custom-cursor--pressed')
+      }
     }
 
-    window.addEventListener('mousemove', handlePointerMove)
-    window.addEventListener('mousedown', handlePointerDown)
-    window.addEventListener('mouseup', handlePointerUp)
+    window.addEventListener('mousemove', handlePointerMove, { passive: true })
+    window.addEventListener('mousedown', handlePointerDown, { passive: true })
+    window.addEventListener('mouseup', handlePointerUp, { passive: true })
 
     return () => {
       window.removeEventListener('mousemove', handlePointerMove)
@@ -68,12 +60,13 @@ function App() {
   return (
     <>
       <span
-        className={`custom-cursor ${cursor.pressed ? 'custom-cursor--pressed' : ''}`}
-        style={{ left: cursor.x, top: cursor.y }}
+        ref={cursorRef}
+        className="custom-cursor"
         aria-hidden="true"
       />
       {scene === 'loader'      && <LoadingScreen onSkip={handleAdvance} />}
-      {scene === 'overview'    && <EarthOverviewPage onBridgeActivate={handleBridgeActivate} />}
+      {scene === 'intro'       && <NarratorIntro onComplete={handleIntroComplete} />}
+      {(scene === 'intro' || scene === 'overview')    && <EarthOverviewPage onBridgeActivate={handleBridgeActivate} />}
       {scene === 'yearcounter' && <YearCounter onSkip={handleYearSkip} />}
       {scene === 'reactor'     && <Reactor />}
     </>

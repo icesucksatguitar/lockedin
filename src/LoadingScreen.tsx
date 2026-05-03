@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import cloveImg from './assets/images/clove.png'
+
+const earthModelUrl = new URL('./assets/3D model/earth.glb', import.meta.url).href
 
 const LOADING_DURATION_MS = 7000
 
@@ -24,18 +27,63 @@ type LoadingScreenProps = {
 function LoadingScreen({ onSkip }: LoadingScreenProps) {
   const [progress, setProgress] = useState(0)
   const [typedText, setTypedText] = useState('')
+  const assetsLoadedRef = useRef(false)
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    Promise.all([
+      fetch(earthModelUrl, { signal: controller.signal }).then(res => res.blob()),
+      new Promise((resolve, reject) => {
+        const img = new Image()
+        img.onload = resolve
+        img.onerror = reject
+        img.src = cloveImg
+      })
+    ]).then(() => {
+      assetsLoadedRef.current = true
+    }).catch(err => {
+      if (err.name !== 'AbortError') {
+        console.error("Failed to preload assets", err)
+        assetsLoadedRef.current = true
+      }
+    })
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
 
   useEffect(() => {
     let animationFrame = 0
-    const startTime = performance.now()
+    let currentProgress = 0
+    let lastTime = performance.now()
 
     const step = (now: number) => {
-      const elapsed = now - startTime
-      const nextProgress = Math.min((elapsed / LOADING_DURATION_MS) * 100, 100)
+      const delta = now - lastTime
+      lastTime = now
 
-      setProgress(nextProgress)
+      let speed = 100 / LOADING_DURATION_MS
 
-      if (nextProgress < 100) {
+      if (!assetsLoadedRef.current && currentProgress >= 70) {
+        const distanceTo75 = 75 - currentProgress
+        if (distanceTo75 > 0) {
+          speed = speed * (distanceTo75 / 5) * 0.1
+        } else {
+          speed = 0
+        }
+      } else if (assetsLoadedRef.current && currentProgress >= 70) {
+        speed = speed * 1.5
+      }
+
+      currentProgress += speed * delta
+      if (currentProgress >= 100) {
+        currentProgress = 100
+      }
+
+      setProgress(currentProgress)
+
+      if (currentProgress < 100) {
         animationFrame = window.requestAnimationFrame(step)
       }
     }

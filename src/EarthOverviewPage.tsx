@@ -245,8 +245,8 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
     const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100)
     camera.position.set(0, 0, 5.2)
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true })
+    renderer.setPixelRatio(1)
     renderer.setClearColor(0x000000, 0)
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.toneMapping = THREE.ACESFilmicToneMapping
@@ -293,17 +293,27 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
       composer.render()
     }
 
+    let needsUpdate = true
+    controls.addEventListener('change', () => { needsUpdate = true })
+
+    const camDir = new THREE.Vector3()
+    const wpClone = new THREE.Vector3()
+
     const tick = () => {
       controls.update()
 
-      if (dotWorldPositions.length === 3) {
-        const camDir = camera.position.clone().normalize()
-        dotWorldPositions.forEach((wp, i) => {
-          const facing = wp.clone().normalize().dot(camDir) > 0.05
-          dotSprites[i].visible = facing
-        })
+      if (needsUpdate) {
+        if (dotWorldPositions.length === 3) {
+          camDir.copy(camera.position).normalize()
+          dotWorldPositions.forEach((wp, i) => {
+            wpClone.copy(wp).normalize()
+            const facing = wpClone.dot(camDir) > 0.05
+            dotSprites[i].visible = facing
+          })
+        }
+        composer.render()
+        needsUpdate = false
       }
-      composer.render()
       animationFrame = window.requestAnimationFrame(tick)
     }
 

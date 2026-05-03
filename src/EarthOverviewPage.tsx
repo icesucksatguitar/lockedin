@@ -6,6 +6,8 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 
+import cloveImg from './assets/images/clove.png'
+
 const earthModelUrl = new URL('./assets/3D model/earth.glb', import.meta.url).href
 
 const alphaEarthStats = {
@@ -143,14 +145,13 @@ function disposeObject3D(object: THREE.Object3D) {
   })
 }
 
-// ── Node panel overlay ────────────────────────────────────────────────────────
+
 
 function NodePanel({ dot, onClose }: { dot: DotDef; onClose: () => void }) {
   return (
     <div className="node-overlay" onClick={onClose}>
       <div className="node-panel" onClick={(e) => e.stopPropagation()}>
 
-        {/* Left: visual area */}
         <div className="node-panel__visual">
           <div className="node-panel__banner">
             <span className="node-panel__coords">NODE&nbsp;&nbsp;{dot.lat} / {dot.lng}</span>
@@ -168,7 +169,7 @@ function NodePanel({ dot, onClose }: { dot: DotDef; onClose: () => void }) {
           </div>
         </div>
 
-        {/* Right: data sidebar */}
+
         <div className="node-panel__sidebar">
           <button className="node-panel__close" onClick={onClose} aria-label="Close">✕</button>
 
@@ -203,7 +204,7 @@ function NodePanel({ dot, onClose }: { dot: DotDef; onClose: () => void }) {
   )
 }
 
-// ── EarthModel ────────────────────────────────────────────────────────────────
+
 
 type EarthModelProps = {
   className: string
@@ -294,7 +295,7 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
 
     const tick = () => {
       controls.update()
-      // Show/hide sprites based on whether they face the camera
+
       if (dotWorldPositions.length === 3) {
         const camDir = camera.position.clone().normalize()
         dotWorldPositions.forEach((wp, i) => {
@@ -306,7 +307,7 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
       animationFrame = window.requestAnimationFrame(tick)
     }
 
-    // Canvas click → raycast to find nearest dot
+
     const raycaster = new THREE.Raycaster()
     const handleCanvasClick = (e: MouseEvent) => {
       if (dotWorldPositions.length !== 3) return
@@ -343,10 +344,10 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
         earth.rotation.y = mirrored ? Math.PI * 0.82 : -Math.PI * 0.22
         earth.rotation.z = mirrored ? -0.05 : 0.05
 
-        // Place sprites on sphere surface
+
         const r = targetSize * 0.5
         dots.forEach((d) => {
-          const wp = d.pos.clone().multiplyScalar(r * 1.06) // slightly above surface
+          const wp = d.pos.clone().multiplyScalar(r * 1.06)
           dotWorldPositions.push(d.pos.clone().multiplyScalar(r))
           const mat = new THREE.SpriteMaterial({
             map: dotTexture,
@@ -396,7 +397,7 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
       composer.dispose(); renderer.dispose()
       if (host.contains(renderer.domElement)) host.removeChild(renderer.domElement)
     }
-  }, [mirrored]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [mirrored])
 
   return (
     <div
@@ -408,7 +409,6 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
 
 function EarthOverviewPage({ onBridgeActivate }: { onBridgeActivate: () => void }) {
   const [activeDot, setActiveDot] = useState<DotDef | null>(null)
@@ -428,6 +428,8 @@ function EarthOverviewPage({ onBridgeActivate }: { onBridgeActivate: () => void 
 
       <div className="earth-glow earth-glow--left" aria-hidden="true" />
       <div className="earth-glow earth-glow--right" aria-hidden="true" />
+
+      <img src={cloveImg} className="clove-image" alt="" aria-hidden="true" />
 
       <EarthModel className="earth-model earth-model--left" mirrored={false} onDotClick={setActiveDot} />
       <EarthModel className="earth-model earth-model--right" mirrored onDotClick={setActiveDot} />
@@ -466,11 +468,9 @@ function EarthOverviewPage({ onBridgeActivate }: { onBridgeActivate: () => void 
           onClick={onBridgeActivate}
           style={{ cursor: 'none' }}
         >
-          INITIALIZE QUANTUM BRIDGE
+          ASCEND
         </button>
-        <span className="overview-bottom-bar__meta overview-bottom-bar__meta--right">
-          MEM: 42.7 TB&nbsp;&nbsp; TEMP: 38°C
-        </span>
+
       </footer>
 
       {activeDot && <NodePanel dot={activeDot} onClose={() => setActiveDot(null)} />}

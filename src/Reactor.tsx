@@ -1,64 +1,50 @@
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
-// Placeholder voiceline — replace with real lines later
-const VOICELINES: { speaker: string; text: string }[] = [
-  // { speaker: 'TARS', text: 'Welcome to the Fractured Reactor interface.' },
+import chamberImg from './assets/images/chamber.png'
+import sageImg from './assets/images/sage.png'
+import brimstoneImg from './assets/images/brimstone.png'
+
+const PHASES = [
+  { id: 'text', type: 'text', content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.', duration: 4000 },
+  { id: 'chamber', type: 'image', content: chamberImg, duration: 5000 },
+  { id: 'sage', type: 'image', content: sageImg, duration: 5000 },
+  { id: 'brimstone', type: 'image', content: brimstoneImg, duration: 5000 },
 ]
 
-type ReactorProps = {
-  onSkip?: () => void
-}
+function Reactor() {
+  const [phaseIndex, setPhaseIndex] = useState(0)
+  const [isFading, setIsFading] = useState(false)
 
-function Reactor({ onSkip }: ReactorProps) {
-  const [activeLine] = useState(0)
+  useEffect(() => {
+    const currentPhase = PHASES[phaseIndex]
+    if (!currentPhase) return
 
-  const currentLine = VOICELINES[activeLine] ?? null
+    const timer = setTimeout(() => {
+      if (phaseIndex < PHASES.length - 1) {
+        setIsFading(true)
+
+        setTimeout(() => {
+          setPhaseIndex(prev => prev + 1)
+          setIsFading(false)
+        }, 500)
+      }
+    }, currentPhase.duration)
+
+    return () => clearTimeout(timer)
+  }, [phaseIndex])
+
+  const current = PHASES[phaseIndex]
 
   return (
     <main className="reactor-screen">
-      {/* Starfield */}
-      <div className="starfield" aria-hidden="true">
-        {Array.from({ length: 200 }).map((_, i) => {
-          const left = (i * 13.7 + (i % 7) * 3.1) % 100
-          const top  = (i * 27.3 + (i % 5) * 5.9) % 100
-          const size = i % 9 === 0 ? 2.2 : i % 4 === 0 ? 1.4 : 0.8
-          return (
-            <span
-              key={i}
-              className="star"
-              style={{ left: `${left}%`, top: `${top}%`, width: `${size}px`, height: `${size}px`, animationDelay: `${(i % 18) * 0.14}s` }}
-            />
-          )
-        })}
-      </div>
-
-      {/* Main content area — placeholder for future elements */}
-      <div className="reactor-content">
-        <p className="reactor-title">FRACTURED REACTOR</p>
-        <p className="reactor-subtitle">SELECT AN AGENT TO VIEW DETAILS</p>
-      </div>
-
-      {/* Subtitle / voiceline bar */}
-      <div className="voiceline-bar" aria-live="polite">
-        {currentLine ? (
-          <>
-            <span className="voiceline-speaker">{currentLine.speaker}:</span>
-            <p className="voiceline-text">{currentLine.text}</p>
-          </>
+      <div className="reactor-vignette" aria-hidden="true" />
+      <div className={`reactor-container ${isFading ? 'reactor-container--fade-out' : 'reactor-container--fade-in'}`} key={current.id}>
+        {current.type === 'text' ? (
+          <p className="reactor-lorem">{current.content}</p>
         ) : (
-          <>
-            {/* Empty placeholder — voicelines will populate here */}
-            <span className="voiceline-speaker voiceline-speaker--empty">&nbsp;</span>
-            <p className="voiceline-text voiceline-text--empty">&nbsp;</p>
-          </>
+          <img src={current.content as string} className="reactor-agent-img" alt={current.id} />
         )}
       </div>
-
-      {onSkip && (
-        <button type="button" className="skip-button" onClick={onSkip}>
-          press any button to skip
-        </button>
-      )}
     </main>
   )
 }

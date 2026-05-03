@@ -9,7 +9,7 @@ type YearCounterProps = {
   onSkip: () => void
 }
 
-// Easing: slow start, accelerates — ease-in cubic
+
 function easeIn(t: number): number {
   return t * t * t
 }
@@ -20,19 +20,19 @@ function YearCounter({ onSkip }: YearCounterProps) {
   const [counting, setCounting] = useState(false)
   const countFrame = useRef(0)
 
-  // Trigger fade-in after mount
+
   useEffect(() => {
     const id = window.setTimeout(() => setFadeReady(true), 30)
     return () => window.clearTimeout(id)
   }, [])
 
-  // Start counting after fade duration
+
   useEffect(() => {
     const id = window.setTimeout(() => setCounting(true), FADE_DURATION_MS)
     return () => window.clearTimeout(id)
   }, [])
 
-  // Counting animation
+
   useEffect(() => {
     if (!counting) return
 
@@ -64,7 +64,6 @@ function YearCounter({ onSkip }: YearCounterProps) {
       aria-label="Year counter"
     >
       <div className="year-counter-content">
-        <p className="year-counter-label">QUANTUM BRIDGE INITIALIZING</p>
 
         <div className="year-counter-display" aria-live="polite" aria-atomic="true">
           {year}
@@ -74,7 +73,7 @@ function YearCounter({ onSkip }: YearCounterProps) {
       </div>
 
       <button type="button" className="skip-button" onClick={onSkip}>
-        press any button to skip
+        continue
       </button>
     </main>
   )

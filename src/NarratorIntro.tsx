@@ -201,6 +201,12 @@ export default function NarratorIntro({ onComplete, onPhaseChange }: NarratorInt
     }, 600) // matches dramatic CSS close animation
   }
 
+  const handleSkip = () => {
+    if (audioRef.current && audioRef.current.currentTime < 34) {
+      audioRef.current.currentTime = 34
+    }
+  }
+
   return (
     <div className="narrator-scene">
       <div className={`narrator-scene__background ${fading ? 'narrator-scene__background--fade-out' : ''}`}>
@@ -235,7 +241,7 @@ export default function NarratorIntro({ onComplete, onPhaseChange }: NarratorInt
       
       <audio ref={audioRef} src={voicelineUrl} />
       
-      <button className="narrator-scene__skip" onClick={onComplete}>
+      <button className="narrator-scene__skip" onClick={handleSkip}>
         skip transmission
       </button>
     </div>

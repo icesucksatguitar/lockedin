@@ -440,12 +440,14 @@ function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPha
   const [activeDot, setActiveDot] = useState<DotDef | null>(null)
 
   const errorSpam = useMemo(() => {
-    return Array.from({ length: 22 }).map((_, i) => {
+    return Array.from({ length: 40 }).map((_, i) => {
       // Span them over ~18 seconds (from 0s to 18s).
-      const delay = (Math.random() * 18).toFixed(2);
+      // Use a distribution that ensures a good number at the very start
+      const delay = (Math.pow(Math.random(), 1.2) * 18).toFixed(2);
+      
       // Randomly offset them from the absolute center
-      const offsetX = (Math.random() - 0.5) * 45; // -22.5vw to 22.5vw
-      const offsetY = (Math.random() - 0.5) * 45; // -22.5vh to 22.5vh
+      const offsetX = (Math.random() - 0.5) * 60; // wider spread
+      const offsetY = (Math.random() - 0.5) * 55;
       const entropy = (80 + Math.random() * 19).toFixed(1);
       
       return { id: i, delay, offsetX, offsetY, entropy };

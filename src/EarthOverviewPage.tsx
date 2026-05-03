@@ -300,7 +300,7 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
         const camDir = camera.position.clone().normalize()
         dotWorldPositions.forEach((wp, i) => {
           const facing = wp.clone().normalize().dot(camDir) > 0.05
-          dotSprites[i].visible = true
+          dotSprites[i].visible = facing
         })
       }
       composer.render()

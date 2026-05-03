@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 
 import chamberImg from './assets/images/chamber.png'
 import sageImg from './assets/images/sage.png'

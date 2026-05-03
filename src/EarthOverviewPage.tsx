@@ -128,19 +128,19 @@ function EarthModel({ className, mirrored = false }: EarthModelProps) {
 
     const scene = new THREE.Scene()
     const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100)
-    camera.position.set(0, 0, 5.8)
+    camera.position.set(0, 0, 6.5)
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     renderer.setClearColor(0x000000, 0)
     renderer.outputColorSpace = THREE.SRGBColorSpace
     renderer.toneMapping = THREE.ACESFilmicToneMapping
-    renderer.toneMappingExposure = 0.72
+    renderer.toneMappingExposure = 0.85
     host.appendChild(renderer.domElement)
 
     const composer = new EffectComposer(renderer)
     const renderPass = new RenderPass(scene, camera)
-    const bloomPass = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.9, 0.55, 0.35)
+    const bloomPass = new UnrealBloomPass(new THREE.Vector2(1, 1), 1.8, 0.75, 0.15)
     composer.addPass(renderPass)
     composer.addPass(bloomPass)
 
@@ -158,9 +158,13 @@ function EarthModel({ className, mirrored = false }: EarthModelProps) {
     keyLight.position.set(3, 2, 5)
     scene.add(keyLight)
 
-    const rimLight = new THREE.DirectionalLight(0x6e95ff, 1.25)
+    const rimLight = new THREE.DirectionalLight(0x6e95ff, 2.2)
     rimLight.position.set(-4, -1, -3)
     scene.add(rimLight)
+
+    const backLight = new THREE.DirectionalLight(0x3a7fff, 1.4)
+    backLight.position.set(0, 3, -5)
+    scene.add(backLight)
 
     const modelGroup = new THREE.Group()
     const glowGroup = new THREE.Group()
@@ -210,7 +214,7 @@ function EarthModel({ className, mirrored = false }: EarthModelProps) {
         earth.position.sub(center)
 
         const longestEdge = Math.max(size.x, size.y, size.z) || 1
-        const targetSize = 3.35
+        const targetSize = 7
         earth.scale.setScalar(targetSize / longestEdge)
         earth.rotation.x = 0.12
         earth.rotation.y = mirrored ? Math.PI * 0.82 : -Math.PI * 0.22
@@ -230,7 +234,7 @@ function EarthModel({ className, mirrored = false }: EarthModelProps) {
             child.material = new THREE.MeshBasicMaterial({
               color: mirrored ? 0x8fb1ff : 0xa2c1ff,
               transparent: true,
-              opacity: 0.18,
+              opacity: 0.28,
               side: THREE.BackSide,
               blending: THREE.AdditiveBlending,
               depthWrite: false,
@@ -279,7 +283,7 @@ function EarthOverviewPage() {
       <div className="starfield" aria-hidden="true">
         {Array.from({ length: 280 }).map((_, index) => {
           const left = (index * 11.7 + (index % 9) * 2.9) % 100
-          const top = (index * 23.9 + (index % 7) * 4.4) % 100
+          const top = (index * 23.9 + (index % 7) * 7) % 100
           const size = index % 11 === 0 ? 2.4 : index % 5 === 0 ? 1.6 : 0.9
 
           return (

@@ -6,8 +6,11 @@ import Reactor from './Reactor'
 import YearCounter from './YearCounter'
 import './App.css'
 
+export type CinematicPhase = 'pre-anomaly' | 'anomaly' | 'directives' | 'completed'
+
 function App() {
   const [scene, setScene] = useState<'loader' | 'intro' | 'overview' | 'yearcounter' | 'reactor'>('loader')
+  const [cinematicPhase, setCinematicPhase] = useState<CinematicPhase>('pre-anomaly')
   const cursorRef = useRef<HTMLSpanElement>(null)
 
   const handleAdvance = useCallback(() => {
@@ -16,6 +19,7 @@ function App() {
 
   const handleIntroComplete = useCallback(() => {
     setScene('overview')
+    setCinematicPhase('completed')
   }, [])
 
   const handleBridgeActivate = useCallback(() => {
@@ -65,8 +69,8 @@ function App() {
         aria-hidden="true"
       />
       {scene === 'loader'      && <LoadingScreen onSkip={handleAdvance} />}
-      {scene === 'intro'       && <NarratorIntro onComplete={handleIntroComplete} />}
-      {(scene === 'intro' || scene === 'overview')    && <EarthOverviewPage onBridgeActivate={handleBridgeActivate} />}
+      {scene === 'intro'       && <NarratorIntro onComplete={handleIntroComplete} onPhaseChange={setCinematicPhase} />}
+      {(scene === 'intro' || scene === 'overview')    && <EarthOverviewPage onBridgeActivate={handleBridgeActivate} showControls={scene === 'overview'} cinematicPhase={cinematicPhase} />}
       {scene === 'yearcounter' && <YearCounter onSkip={handleYearSkip} />}
       {scene === 'reactor'     && <Reactor />}
     </>

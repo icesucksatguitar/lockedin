@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import voicelineUrl from './assets/first_voiceline.wav'
 import './NarratorIntro.css'
 
+import type { CinematicPhase } from './App'
+
 type NarratorIntroProps = {
   onComplete: () => void
+  onPhaseChange: (phase: CinematicPhase) => void
 }
 
 type Subtitle = {
@@ -17,17 +20,27 @@ const TRANSCRIPT: Subtitle[] = [
   { start: 0.0, end: 5.5, text: "In the Beginning, there was equilibrium" },
   { start: 5.6, end: 11.5, text: "An unseen symmetry sustaining everything that persisted" },
   { start: 11.6, end: 15.5, text: "Perfect, Unbroken" },
-  { start: 15.6, end: 20.0, text: "Until..." }
+  { start: 15.6, end: 16.9, text: "Until..." },
+  { start: 17.0, end: 20.0, text: "Something Shifted" },
+  { start: 20.1, end: 24.0, text: "it didn't arrive with warning" },
+  { start: 25.0, end: 29.0, text: "And still, we took more" },
+  { start: 30.0, end: 34.0, text: "And So, as imbalance took hold" },
+  { start: 35.0, end: 38.0, text: "The world did not remain silent" },
+  { start: 39.0, end: 42.0, text: "Three fundamental directives were set" },
+  { start: 43.0, end: 46.0, text: "Not as choice, But as necessity" }
 ]
 
-export default function NarratorIntro({ onComplete }: NarratorIntroProps) {
+export default function NarratorIntro({ onComplete, onPhaseChange }: NarratorIntroProps) {
   const [fading, setFading] = useState(false)
   const [activeSubtitleIndex, setActiveSubtitleIndex] = useState(-1)
   const [displayedText, setDisplayedText] = useState('')
+  const [showOverlay, setShowOverlay] = useState(false)
+  const [overlayClosing, setOverlayClosing] = useState(false)
 
   const audioRef = useRef<HTMLAudioElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const completedRef = useRef(false)
+  const overlayDismissedRef = useRef(false)
 
   // Audio & Timing Logic
   useEffect(() => {
@@ -45,6 +58,17 @@ export default function NarratorIntro({ onComplete }: NarratorIntroProps) {
       const time = audio.currentTime
       if (time >= 17 && !fading) {
         setFading(true)
+      }
+
+      // Cinematic phases
+      if (time >= 20 && time < 39) {
+        onPhaseChange('anomaly')
+      } else if (time >= 39) {
+        onPhaseChange('directives')
+      }
+
+      if (time >= 39 && !showOverlay && !overlayDismissedRef.current && !overlayClosing) {
+        setShowOverlay(true)
       }
 
       // Find which subtitle should be playing right now
@@ -169,10 +193,19 @@ export default function NarratorIntro({ onComplete }: NarratorIntroProps) {
     }
   }, [])
 
+  const handleCloseOverlay = () => {
+    setOverlayClosing(true)
+    overlayDismissedRef.current = true
+    setTimeout(() => {
+      setShowOverlay(false)
+    }, 400) // matches CSS close animation
+  }
+
   return (
-    <div className={`narrator-scene ${fading ? 'narrator-scene--fade-out' : ''}`}>
-      <canvas ref={canvasRef} className="narrator-scene__canvas" />
-      <audio ref={audioRef} src={voicelineUrl} />
+    <div className="narrator-scene">
+      <div className={`narrator-scene__background ${fading ? 'narrator-scene__background--fade-out' : ''}`}>
+        <canvas ref={canvasRef} className="narrator-scene__canvas" />
+      </div>
       
       <div className="narrator-scene__subtitles">
         {activeSubtitleIndex !== -1 && (
@@ -182,6 +215,26 @@ export default function NarratorIntro({ onComplete }: NarratorIntroProps) {
         )}
       </div>
 
+      {showOverlay && (
+        <div className={`ai-overlay ai-overlay--centered ${overlayClosing ? 'ai-overlay--closing' : ''}`}>
+          <div className="ai-overlay__header">
+            <span className="ai-overlay__title">SYSTEM_OVERRIDE // DIRECTIVES</span>
+            <button className="ai-overlay__close" onClick={handleCloseOverlay}>
+              [ X ]
+            </button>
+          </div>
+          <div className="ai-overlay__content">
+            <ul className="ai-overlay__list">
+              <li style={{ animationDelay: '0.6s' }}>01. PRESERVE TIMELINE INTEGRITY</li>
+              <li style={{ animationDelay: '1.2s' }}>02. CONTAIN ANOMALOUS ENERGY</li>
+              <li style={{ animationDelay: '1.8s' }}>03. INITIATE ASCENSION PROTOCOL</li>
+            </ul>
+          </div>
+        </div>
+      )}
+      
+      <audio ref={audioRef} src={voicelineUrl} />
+      
       <button className="narrator-scene__skip" onClick={onComplete}>
         skip transmission
       </button>

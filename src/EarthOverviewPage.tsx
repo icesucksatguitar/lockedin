@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import type { CinematicPhase } from './App'
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
@@ -210,6 +211,7 @@ type EarthModelProps = {
   className: string
   mirrored?: boolean
   onDotClick: (dot: DotDef) => void
+  cinematicPhase?: CinematicPhase
 }
 
 function makeDotTexture(): THREE.CanvasTexture {
@@ -220,10 +222,10 @@ function makeDotTexture(): THREE.CanvasTexture {
   const cx = sz / 2
   // Outer glow
   const g = ctx.createRadialGradient(cx, cx, 3, cx, cx, cx)
-  g.addColorStop(0, 'rgba(57,255,132,1)')
-  g.addColorStop(0.18, 'rgba(57,255,132,0.9)')
-  g.addColorStop(0.45, 'rgba(57,255,132,0.3)')
-  g.addColorStop(1, 'rgba(57,255,132,0)')
+  g.addColorStop(0, 'rgba(255,255,255,1)')
+  g.addColorStop(0.18, 'rgba(255,255,255,0.9)')
+  g.addColorStop(0.45, 'rgba(255,255,255,0.3)')
+  g.addColorStop(1, 'rgba(255,255,255,0)')
   ctx.fillStyle = g
   ctx.fillRect(0, 0, sz, sz)
   // Bright centre
@@ -232,9 +234,15 @@ function makeDotTexture(): THREE.CanvasTexture {
   return new THREE.CanvasTexture(c)
 }
 
-function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps) {
+function EarthModel({ className, mirrored = false, onDotClick, cinematicPhase }: EarthModelProps) {
   const canvasHostRef = useRef<HTMLDivElement>(null)
   const dots = mirrored ? OMEGA_DOTS : ALPHA_DOTS
+  const phaseRef = useRef(cinematicPhase)
+
+  useEffect(() => {
+    phaseRef.current = cinematicPhase
+    canvasHostRef.current?.dispatchEvent(new Event('forceUpdate'))
+  }, [cinematicPhase])
 
   useEffect(() => {
     const host = canvasHostRef.current
@@ -294,7 +302,9 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
     }
 
     let needsUpdate = true
-    controls.addEventListener('change', () => { needsUpdate = true })
+    const setNeedsUpdate = () => { needsUpdate = true }
+    controls.addEventListener('change', setNeedsUpdate)
+    host.addEventListener('forceUpdate', setNeedsUpdate)
 
     const camDir = new THREE.Vector3()
     const wpClone = new THREE.Vector3()
@@ -303,12 +313,17 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
       controls.update()
 
       if (needsUpdate) {
+        const currentPhase = phaseRef.current
+        const isAnomaly = currentPhase === 'anomaly'
+        const colorHex = isAnomaly ? 0xff3939 : 0x39ff84
+
         if (dotWorldPositions.length === 3) {
           camDir.copy(camera.position).normalize()
           dotWorldPositions.forEach((wp, i) => {
             wpClone.copy(wp).normalize()
             const facing = wpClone.dot(camDir) > 0.05
             dotSprites[i].visible = facing
+            dotSprites[i].material.color.setHex(colorHex)
           })
         }
         composer.render()
@@ -401,6 +416,7 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
       window.cancelAnimationFrame(animationFrame)
       window.removeEventListener('resize', handleResize)
       renderer.domElement.removeEventListener('click', handleCanvasClick)
+      host.removeEventListener('forceUpdate', setNeedsUpdate)
       controls.dispose(); glowGroup.clear(); modelGroup.clear()
       dotSprites.forEach((s) => { s.material.dispose(); scene.remove(s) })
       dotTexture.dispose()
@@ -420,11 +436,33 @@ function EarthModel({ className, mirrored = false, onDotClick }: EarthModelProps
 }
 
 
-function EarthOverviewPage({ onBridgeActivate }: { onBridgeActivate: () => void }) {
+function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPhase }: { onBridgeActivate: () => void, showControls?: boolean, cinematicPhase?: CinematicPhase }) {
   const [activeDot, setActiveDot] = useState<DotDef | null>(null)
 
   return (
     <main className="overview-screen">
+      {/* Global Anomaly Warnings */}
+      {(cinematicPhase === 'anomaly' || cinematicPhase === 'directives') && (
+        <div className={`global-warnings ${cinematicPhase === 'directives' ? 'global-warnings--closing' : ''}`}>
+          <div className="sci-fi-warning" style={{ top: '18%', left: '6%', animationDelay: '0s, 0.2s' }}>
+            <div className="sci-fi-warning__glitch">! CRITICAL ANOMALY</div>
+            <div className="sci-fi-warning__details">ENTROPY SPIKE: 84.2%</div>
+          </div>
+          <div className="sci-fi-warning" style={{ top: '28%', left: '4%', animationDelay: '0.1s, 0.5s' }}>
+            <div className="sci-fi-warning__glitch">! CRITICAL ANOMALY</div>
+            <div className="sci-fi-warning__details">ENTROPY SPIKE: 91.5%</div>
+          </div>
+          <div className="sci-fi-warning" style={{ top: '18%', right: '6%', left: 'auto', animationDelay: '0.15s, 0.1s' }}>
+            <div className="sci-fi-warning__glitch">! CRITICAL ANOMALY</div>
+            <div className="sci-fi-warning__details">ENTROPY SPIKE: 77.8%</div>
+          </div>
+          <div className="sci-fi-warning" style={{ top: '28%', right: '4%', left: 'auto', animationDelay: '0.05s, 0.4s' }}>
+            <div className="sci-fi-warning__glitch">! CRITICAL ANOMALY</div>
+            <div className="sci-fi-warning__details">ENTROPY SPIKE: 89.1%</div>
+          </div>
+        </div>
+      )}
+
       <div className="starfield" aria-hidden="true">
         {Array.from({ length: 280 }).map((_, i) => {
           const left = (i * 11.7 + (i % 9) * 2.9) % 100
@@ -441,8 +479,8 @@ function EarthOverviewPage({ onBridgeActivate }: { onBridgeActivate: () => void 
 
       <img src={cloveImg} className="clove-image" alt="" aria-hidden="true" />
 
-      <EarthModel className="earth-model earth-model--left" mirrored={false} onDotClick={setActiveDot} />
-      <EarthModel className="earth-model earth-model--right" mirrored onDotClick={setActiveDot} />
+      <EarthModel className="earth-model earth-model--left" mirrored={false} onDotClick={setActiveDot} cinematicPhase={cinematicPhase} />
+      <EarthModel className="earth-model earth-model--right" mirrored onDotClick={setActiveDot} cinematicPhase={cinematicPhase} />
 
       <section className="overview-column overview-column--left">
         <article className="planet-card">
@@ -470,7 +508,7 @@ function EarthOverviewPage({ onBridgeActivate }: { onBridgeActivate: () => void 
         </article>
       </section>
 
-      <footer className="overview-bottom-bar">
+      <footer className={`overview-bottom-bar ${showControls ? '' : 'overview-bottom-bar--hidden'}`}>
         <span className="overview-bottom-bar__meta">RUNTIME: 00:00:00</span>
         <button
           type="button"

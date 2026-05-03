@@ -591,6 +591,13 @@
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(5, 5, 8, 0.62);
   backdrop-filter: blur(10px);
+  opacity: 1;
+  transition: opacity 3s ease-in-out;
+}
+
+.overview-bottom-bar--hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .overview-bottom-bar__meta {
@@ -815,6 +822,81 @@
   }
 }
 
+/* ── Sci-Fi Anomaly Warnings ────────────────────────────── */
+
+.global-warnings {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.global-warnings--closing .sci-fi-warning {
+  animation: warning-fold 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.sci-fi-warning {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(20, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 57, 57, 0.4);
+  border-left: 3px solid #ff3939;
+  padding: 0.6rem 1rem;
+  color: #ff3939;
+  font-family: 'Courier New', Courier, monospace;
+  box-shadow: 0 0 15px rgba(255, 57, 57, 0.2);
+  transform-origin: top left;
+  animation: 
+    warning-unfold 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+    warning-float 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.sci-fi-warning--hidden {
+  display: none;
+}
+
+.sci-fi-warning--closing {
+  animation: warning-fold 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sci-fi-warning__glitch {
+  font-size: 0.75rem;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.2rem;
+  text-shadow: 0 0 8px rgba(255, 57, 57, 0.8);
+  animation: warning-pulse 1.5s ease-in-out infinite;
+}
+
+.sci-fi-warning__details {
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@keyframes warning-unfold {
+  0% { transform: scaleX(0) scaleY(0.1); opacity: 0; }
+  50% { transform: scaleX(1) scaleY(0.1); opacity: 1; }
+  100% { transform: scaleX(1) scaleY(1); opacity: 1; }
+}
+
+@keyframes warning-fold {
+  0% { transform: scaleX(1) scaleY(1); opacity: 1; }
+  100% { transform: scaleX(0) scaleY(0.1); opacity: 0; }
+}
+
+@keyframes warning-pulse {
+  0%, 100% { opacity: 1; text-shadow: 0 0 8px rgba(255, 57, 57, 0.8); }
+  50% { opacity: 0.6; text-shadow: 0 0 4px rgba(255, 57, 57, 0.4); }
+}
+
+@keyframes warning-float {
+  0%, 100% { margin-top: 0; }
+  50% { margin-top: -6px; }
+}
 
 
 .year-counter-screen {

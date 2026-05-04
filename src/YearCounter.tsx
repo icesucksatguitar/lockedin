@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import timeCounterVoiceline from './assets/time-counter_voiceline.mp3'
 
 const START_YEAR = 2015
 const END_YEAR = 3000
@@ -19,13 +20,58 @@ function YearCounter({ onSkip }: YearCounterProps) {
   const [year, setYear] = useState(START_YEAR)
   const [counting, setCounting] = useState(false)
   const countFrame = useRef(0)
+  const audioCtx = useRef<AudioContext | null>(null)
+  const lastYear = useRef(START_YEAR)
 
+  const playTick = () => {
+    try {
+      if (!audioCtx.current) {
+        audioCtx.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+      }
+      const ctx = audioCtx.current
+      if (ctx.state === 'suspended') {
+        ctx.resume()
+      }
+
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      
+      // Mechanical "tick" - sharp attack, fast decay, varying pitch
+      osc.type = 'square'
+      const baseFreq = 800 + Math.random() * 400
+      osc.frequency.setValueAtTime(baseFreq, ctx.currentTime)
+      osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.03)
+      
+      gain.gain.setValueAtTime(0.03, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03)
+      
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      
+      osc.start()
+      osc.stop(ctx.currentTime + 0.03)
+    } catch (e) {
+      console.error("Failed to play tick sound:", e)
+    }
+  }
 
   useEffect(() => {
     const id = window.setTimeout(() => setFadeReady(true), 30)
     return () => window.clearTimeout(id)
   }, [])
 
+
+  useEffect(() => {
+    if (counting) {
+      const audio = new Audio(timeCounterVoiceline)
+      audio.volume = 0.8
+      audio.play().catch(e => console.error("Audio playback blocked:", e))
+      return () => {
+        audio.pause()
+        audio.currentTime = 0
+      }
+    }
+  }, [counting])
 
   useEffect(() => {
     const id = window.setTimeout(() => setCounting(true), FADE_DURATION_MS)
@@ -43,7 +89,12 @@ function YearCounter({ onSkip }: YearCounterProps) {
       const t = Math.min(elapsed / COUNT_DURATION_MS, 1)
       const easedT = easeIn(t)
       const currentYear = Math.round(START_YEAR + easedT * (END_YEAR - START_YEAR))
-      setYear(currentYear)
+      
+      if (currentYear !== lastYear.current) {
+        playTick()
+        lastYear.current = currentYear
+        setYear(currentYear)
+      }
 
       if (t < 1) {
         countFrame.current = window.requestAnimationFrame(tick)

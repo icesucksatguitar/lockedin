@@ -4,6 +4,7 @@ import LoadingScreen from './LoadingScreen'
 import NarratorIntro from './NarratorIntro'
 import Reactor from './Reactor'
 import YearCounter from './YearCounter'
+import AboutPage from './AboutPage'
 import backgroundAudio from './assets/background-audio/background_audio.mp3'
 import './App.css'
 
@@ -12,6 +13,7 @@ export type CinematicPhase = 'pre-anomaly' | 'anomaly' | 'directives' | 'complet
 function App() {
   const [scene, setScene] = useState<'loader' | 'intro' | 'overview' | 'yearcounter' | 'reactor'>('loader')
   const [cinematicPhase, setCinematicPhase] = useState<CinematicPhase>('pre-anomaly')
+  const [showAbout, setShowAbout] = useState(false)
   const cursorRef = useRef<HTMLSpanElement>(null)
   const bgAudioRef = useRef<HTMLAudioElement>(null)
 
@@ -100,9 +102,10 @@ function App() {
       />
       {scene === 'loader'      && <LoadingScreen onSkip={handleAdvance} />}
       {scene === 'intro'       && <NarratorIntro onComplete={handleIntroComplete} onPhaseChange={setCinematicPhase} />}
-      {(scene === 'intro' || scene === 'overview')    && <EarthOverviewPage onBridgeActivate={handleBridgeActivate} showControls={scene === 'overview'} cinematicPhase={cinematicPhase} />}
+      {(scene === 'intro' || scene === 'overview')    && <EarthOverviewPage onBridgeActivate={handleBridgeActivate} showControls={scene === 'overview'} cinematicPhase={cinematicPhase} onAbout={() => setShowAbout(true)} />}
       {scene === 'yearcounter' && <YearCounter onSkip={handleYearSkip} />}
       {scene === 'reactor'     && <Reactor />}
+      {showAbout && <AboutPage onClose={() => setShowAbout(false)} />}
     </>
   )
 }

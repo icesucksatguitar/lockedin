@@ -471,8 +471,24 @@ function EarthModel({ className, mirrored = false, onDotClick, cinematicPhase }:
 }
 
 
-function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPhase }: { onBridgeActivate: () => void, showControls?: boolean, cinematicPhase?: CinematicPhase }) {
+function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPhase, onAbout }: { onBridgeActivate: () => void, showControls?: boolean, cinematicPhase?: CinematicPhase, onAbout?: () => void }) {
   const [activeDot, setActiveDot] = useState<DotDef | null>(null)
+  const [runtime, setRuntime] = useState(0)
+
+  useEffect(() => {
+    const startTime = Date.now()
+    const interval = setInterval(() => {
+      setRuntime(Math.floor((Date.now() - startTime) / 1000))
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const formatTime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0')
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0')
+    const s = (seconds % 60).toString().padStart(2, '0')
+    return `${h}:${m}:${s}`
+  }
 
   const errorSpam = useMemo(() => {
     return Array.from({ length: 40 }).map((_, i) => {
@@ -557,7 +573,7 @@ function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPha
       </section>
 
       <footer className={`overview-bottom-bar ${showControls ? '' : 'overview-bottom-bar--hidden'}`}>
-        <span className="overview-bottom-bar__meta">RUNTIME: 00:00:00</span>
+        <span className="overview-bottom-bar__meta">RUNTIME: {formatTime(runtime)}</span>
         <button
           type="button"
           className="overview-bottom-bar__button"
@@ -566,7 +582,19 @@ function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPha
         >
           ASCEND
         </button>
-
+        <div className="overview-bottom-bar__rightbox">
+          {onAbout && (
+            <button
+              type="button"
+              className="overview-bottom-bar__about"
+              onClick={onAbout}
+              aria-label="About lockedin"
+              style={{ cursor: 'none' }}
+            >
+              ABOUT
+            </button>
+          )}
+        </div>
       </footer>
 
       {activeDot && <NodePanel dot={activeDot} onClose={() => setActiveDot(null)} />}

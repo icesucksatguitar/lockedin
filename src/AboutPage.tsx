@@ -22,7 +22,7 @@ export default function AboutPage({ onClose }: AboutPageProps) {
 
         <div className="about-content">
           <div className="about-header">
-            <h1 className="about-title">LOCKEDIN</h1>
+            <h1 className="about-title">VERIDIAN ARCHIVE</h1>
             <p className="about-subtitle">A Window into Two Destinies</p>
           </div>
 
@@ -30,7 +30,7 @@ export default function AboutPage({ onClose }: AboutPageProps) {
             <div className="about-section about-section--lead">
               <h2 className="about-section-heading">THE OBSERVATORY</h2>
               <p className="about-text">
-                LOCKEDIN is not just a data interface; it is a temporal window. It was built to observe the divergence of our planet into two distinct possibilities. Through this lens, we witness the consequence of every choice we make—and the gravity of those we ignore.
+                VERIDIAN ARCHIVE is not just a data interface; it is a temporal window. It was built to observe the divergence of our planet into two distinct possibilities. Through this lens, we witness the consequence of every choice we make—and the gravity of those we ignore.
               </p>
             </div>
 

@@ -615,7 +615,7 @@ function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPha
               type="button"
               className="overview-bottom-bar__about"
               onClick={onAbout}
-              aria-label="About lockedin"
+              aria-label="About VERIDIAN ARCHIVE"
               style={{ cursor: 'none' }}
             >
               ABOUT

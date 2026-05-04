@@ -170,12 +170,28 @@ function NodePanel({ dot, onClose }: { dot: DotDef; onClose: () => void }) {
               </div>
             )}
 
-            {(dot.label === 'SOLUTION' || dot.label === 'IMPACT') && (
+            {dot.label === 'SOLUTION' && (
               <div className="panel-solution">
                 <div className="node-panel__description" style={{ padding: '2rem 1rem', color: '#e0e0e0', textAlign: 'left', lineHeight: '1.5', fontSize: '0.95rem' }}>
-                  <p style={{ marginBottom: '0.5rem' }}>Implementation of renewable energy infrastructure requires global cooperation.</p>
-                  <p style={{ marginBottom: '0.5rem' }}>Optimising resource allocation and reducing waste across supply chains.</p>
-                  <p>Monitoring ecological health to ensure the long-term viability of intervention strategies.</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Shift to renewable energy sources like solar and wind</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Promote energy-efficient buildings and appliances.</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Encourage public transport, cycling, and walking.</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Reduce deforestation and increase afforestation.</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Adopt sustainable agriculture practices.</p>
+                  <p>Minimize waste through recycling and reuse.</p>
+                </div>
+              </div>
+            )}
+
+            {dot.label === 'IMPACT' && (
+              <div className="panel-impact">
+                <div className="node-panel__description" style={{ padding: '2rem 1rem', color: '#ff8a8a', textAlign: 'left', lineHeight: '1.5', fontSize: '0.95rem' }}>
+                  <p style={{ marginBottom: '0.5rem' }}>Rising global temperatures leading to more frequent and intense heatwaves.</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Melting ice caps and rising sea levels threatening coastal communities.</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Increased frequency of extreme weather events such as hurricanes and droughts.</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Disruption of ecosystems and rapid loss of global biodiversity.</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Severe impacts on agriculture, leading to food and water insecurity.</p>
+                  <p>Escalating economic costs from disaster recovery and infrastructure damage.</p>
                 </div>
               </div>
             )}

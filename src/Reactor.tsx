@@ -40,7 +40,8 @@ function Reactor() {
       <div className="reactor-vignette" aria-hidden="true" />
       <div className={`reactor-container ${isFading ? 'reactor-container--fade-out' : 'reactor-container--fade-in'}`} key={current.id}>
         {current.type === 'text' ? (
-          <p className="reactor-lorem">{current.content}</p>
+          <p className="reactor-lorem">Everything fell — Chamber, Sage, and Brimstone couldn’t hold the world together.
+            The protector failed, nature faded, and the preserver watched it all turn to ruin.</p>
         ) : (
           <img src={current.content as string} className="reactor-agent-img" alt={current.id} />
         )}

@@ -4,6 +4,7 @@ import LoadingScreen from './LoadingScreen'
 import NarratorIntro from './NarratorIntro'
 import Reactor from './Reactor'
 import YearCounter from './YearCounter'
+import backgroundAudio from './assets/background-audio/background_audio.mp3'
 import './App.css'
 
 export type CinematicPhase = 'pre-anomaly' | 'anomaly' | 'directives' | 'completed'
@@ -12,6 +13,7 @@ function App() {
   const [scene, setScene] = useState<'loader' | 'intro' | 'overview' | 'yearcounter' | 'reactor'>('loader')
   const [cinematicPhase, setCinematicPhase] = useState<CinematicPhase>('pre-anomaly')
   const cursorRef = useRef<HTMLSpanElement>(null)
+  const bgAudioRef = useRef<HTMLAudioElement>(null)
 
   const handleAdvance = useCallback(() => {
     setScene('intro')
@@ -28,6 +30,28 @@ function App() {
 
   const handleYearSkip = useCallback(() => {
     setScene('reactor')
+  }, [])
+
+  useEffect(() => {
+    if (bgAudioRef.current) {
+      bgAudioRef.current.volume = 0.6
+    }
+
+    const tryPlayAudio = () => {
+      if (bgAudioRef.current && bgAudioRef.current.paused) {
+        bgAudioRef.current.play().catch(console.error)
+      }
+    }
+
+    window.addEventListener('click', tryPlayAudio, { once: true })
+    window.addEventListener('keydown', tryPlayAudio, { once: true })
+    window.addEventListener('touchstart', tryPlayAudio, { once: true })
+
+    return () => {
+      window.removeEventListener('click', tryPlayAudio)
+      window.removeEventListener('keydown', tryPlayAudio)
+      window.removeEventListener('touchstart', tryPlayAudio)
+    }
   }, [])
 
   useEffect(() => {
@@ -63,6 +87,12 @@ function App() {
 
   return (
     <>
+      <audio
+        ref={bgAudioRef}
+        src={backgroundAudio}
+        autoPlay
+        loop
+      />
       <span
         ref={cursorRef}
         className="custom-cursor"

@@ -197,7 +197,7 @@ export default function NarratorIntro({ onComplete, onPhaseChange }: NarratorInt
     overlayDismissedRef.current = true
     setTimeout(() => {
       setShowOverlay(false)
-    }, 600) // matches dramatic CSS close animation
+    }, 600)
   }
 
   const handleSkip = () => {

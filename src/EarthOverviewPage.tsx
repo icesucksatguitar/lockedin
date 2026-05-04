@@ -8,6 +8,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import climateaction from "./assets/SDG's/climateaction-alpha1.jpg"
 import cloveImg from './assets/images/clove.png'
+import badclimate from "./assets/SDG's/bad-climate.png"
 
 const earthModelUrl = new URL('./assets/3D model/earth.glb', import.meta.url).href
 
@@ -91,11 +92,11 @@ const ALPHA_DOTS: DotDef[] = [
     pos: new THREE.Vector3(0.62, 0.48, 0.62).normalize(),
     label: 'CLIMATE ACTION', nodeId: 'QN-0042',
     status: 'ONLINE', ping: '2ms', load: '14%', signal: '98%', freq: '128.4Hz',
-    lat: '43.2405° N', lng: '73.0685° W', 
+    lat: '43.2405° N', lng: '73.0685° W',
   },
   {
     pos: new THREE.Vector3(-0.5, -0.28, 0.82).normalize(),
-    label: 'ALPHA-2', nodeId: 'QN-0117',
+    label: 'SOLUTION', nodeId: 'QN-0117',
     status: 'DEGRADED', ping: '18ms', load: '67%', signal: '76%', freq: '94.1Hz',
     lat: '12.8741° S', lng: '28.3310° E',
   },
@@ -110,14 +111,14 @@ const ALPHA_DOTS: DotDef[] = [
 const OMEGA_DOTS: DotDef[] = [
   {
     pos: new THREE.Vector3(-0.58, 0.44, 0.68).normalize(),
-    label: 'OMEGA-1', nodeId: 'QN-0398',
-    status: 'ONLINE', ping: '3ms', load: '22%', signal: '96%', freq: '131.2Hz',
+    label: 'ROUGE CLIMATE', nodeId: 'QN-0398',
+    status: 'OFFLINE', ping: 'unstable', load: '100%', signal: '29  %', freq: '131.2Hz',
     lat: '51.5074° N', lng: '0.1278° W',
   },
   {
     pos: new THREE.Vector3(0.44, -0.22, 0.87).normalize(),
-    label: 'OMEGA-2', nodeId: 'QN-0451',
-    status: 'ONLINE', ping: '9ms', load: '55%', signal: '83%', freq: '108.9Hz',
+    label: 'IMPACT', nodeId: 'QN-0451',
+    status: 'OFFLINE', ping: '999ms', load: '93%', signal: '83%', freq: '108.9Hz',
     lat: '35.6762° N', lng: '139.6503° E',
   },
   {
@@ -160,8 +161,42 @@ function NodePanel({ dot, onClose }: { dot: DotDef; onClose: () => void }) {
           </div>
           <div className="node-panel__scan">
             <div className="node-panel__scan-lines" aria-hidden="true" />
-            <p className="node-panel__scan-label"><img src={climateaction} className='sdg-climate' width={600} height={300}></img></p>
-            <p className="node-panel__scan-id">ID: {dot.nodeId}</p>
+
+            {dot.label === 'CLIMATE ACTION' && (
+              <div className="panel-climate-action">
+                <p className="node-panel__scan-label"><img src={climateaction} className='sdg-climate' width={600} height={300} alt="Climate Action" /></p>
+                <div className="node-panel__description" style={{ marginTop: '1rem', lineHeight: '1.5', fontSize: '0.9rem', color: '#e0e0e0', textAlign: 'left', padding: '0 1rem' }}>
+                </div>
+              </div>
+            )}
+
+            {(dot.label === 'SOLUTION' || dot.label === 'IMPACT') && (
+              <div className="panel-solution">
+                <div className="node-panel__description" style={{ padding: '2rem 1rem', color: '#e0e0e0', textAlign: 'left', lineHeight: '1.5', fontSize: '0.95rem' }}>
+                  <p style={{ marginBottom: '0.5rem' }}>Implementation of renewable energy infrastructure requires global cooperation.</p>
+                  <p style={{ marginBottom: '0.5rem' }}>Optimising resource allocation and reducing waste across supply chains.</p>
+                  <p>Monitoring ecological health to ensure the long-term viability of intervention strategies.</p>
+                </div>
+              </div>
+            )}
+
+            {dot.label === 'ROUGE CLIMATE' && (
+              <div className="panel-rouge-climate">
+                <p className="node-panel__scan-label"><img src={badclimate} className='bad-climate' width={600} height={300} alt="Bad Climate" /></p>
+                <div className="node-panel__description" style={{ marginTop: '1rem', lineHeight: '1.5', fontSize: '0.9rem', color: '#e0e0e0', textAlign: 'left', padding: '0 1rem' }}>
+                </div>
+              </div>
+            )}
+
+            {dot.label !== 'CLIMATE ACTION' && dot.label !== 'SOLUTION' && dot.label !== 'IMPACT' && dot.label !== 'ROUGE CLIMATE' && (
+              <div className="panel-default">
+                <div className="node-panel__scan-label" style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(0,0,0,0.5)', color: '#666' }}>
+                  NO DATA AVAILABLE
+                </div>
+              </div>
+            )}
+
+            <p className="node-panel__scan-id" style={{ marginTop: '1rem' }}>ID: {dot.nodeId}</p>
           </div>
           <div className="node-panel__footer-bar">
             <span className="node-panel__case">
@@ -220,7 +255,7 @@ function makeDotTexture(): THREE.CanvasTexture {
   c.width = sz; c.height = sz
   const ctx = c.getContext('2d')!
   const cx = sz / 2
-  // Outer glow
+
   const g = ctx.createRadialGradient(cx, cx, 3, cx, cx, cx)
   g.addColorStop(0, 'rgba(255,255,255,1)')
   g.addColorStop(0.18, 'rgba(255,255,255,0.9)')
@@ -228,7 +263,7 @@ function makeDotTexture(): THREE.CanvasTexture {
   g.addColorStop(1, 'rgba(255,255,255,0)')
   ctx.fillStyle = g
   ctx.fillRect(0, 0, sz, sz)
-  // Bright centre
+
   ctx.beginPath(); ctx.arc(cx, cx, 6, 0, Math.PI * 2)
   ctx.fillStyle = 'rgba(255,255,255,0.95)'; ctx.fill()
   return new THREE.CanvasTexture(c)
@@ -444,12 +479,12 @@ function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPha
       // Span them over ~18 seconds (from 0s to 18s).
       // Use a distribution that ensures a good number at the very start
       const delay = (Math.pow(Math.random(), 1.2) * 18).toFixed(2);
-      
+
       // Randomly offset them from the absolute center
       const offsetX = (Math.random() - 0.5) * 60; // wider spread
       const offsetY = (Math.random() - 0.5) * 55;
       const entropy = (80 + Math.random() * 19).toFixed(1);
-      
+
       return { id: i, delay, offsetX, offsetY, entropy };
     });
   }, []);
@@ -460,10 +495,10 @@ function EarthOverviewPage({ onBridgeActivate, showControls = true, cinematicPha
       {(cinematicPhase === 'anomaly' || cinematicPhase === 'directives') && (
         <div className={`global-warnings ${cinematicPhase === 'directives' ? 'global-warnings--closing' : ''}`}>
           {errorSpam.map(err => (
-            <div 
-              key={err.id} 
-              className="sci-fi-warning" 
-              style={{ 
+            <div
+              key={err.id}
+              className="sci-fi-warning"
+              style={{
                 animationDelay: `${err.delay}s`,
                 marginTop: `${err.offsetY}vh`,
                 marginLeft: `${err.offsetX}vw`

@@ -23,53 +23,39 @@ export default function AboutPage({ onClose }: AboutPageProps) {
         <div className="about-content">
           <div className="about-header">
             <h1 className="about-title">LOCKEDIN</h1>
-            <p className="about-subtitle">Advanced Climate Modeling and Real-Time Environmental Analytics</p>
+            <p className="about-subtitle">A Window into Two Destinies</p>
           </div>
 
           <div className="about-grid">
             <div className="about-section about-section--lead">
-              <h2 className="about-section-heading">PROJECT SCOPE</h2>
+              <h2 className="about-section-heading">THE OBSERVATORY</h2>
               <p className="about-text">
-                LOCKEDIN is an open-source, high-fidelity climate visualization engine designed to aggregate and synthesize multi-scalar environmental data. By transforming raw satellite imagery and ground-sensor telemetry into actionable intelligence, we aim to demystify complex atmospheric dynamics and provide researchers, policymakers, and the public with a transparent, verifiable dashboard for planetary health.
+                LOCKEDIN is not just a data interface; it is a temporal window. It was built to observe the divergence of our planet into two distinct possibilities. Through this lens, we witness the consequence of every choice we make—and the gravity of those we ignore.
               </p>
             </div>
 
             <div className="about-section">
-              <h2 className="about-section-heading">TECHNICAL ARCHITECTURE</h2>
+              <h2 className="about-section-heading">ALPHA // THE RECLAMATION</h2>
               <p className="about-text">
-                Built using a specialized stack of React, Three.js, and WebGL, our engine renders real-time volumetric datasets with minimal latency. We utilize custom shaders to map variables—such as CO2 concentrations, thermal anomalies, and deforestation rates—directly onto a 3D Earth model, allowing for deep spatial correlation analysis.
+                To your left is the Alpha Timeline. It is the story of what happens when the directives are followed. In this world, the warnings were met with action, the scars of industry were healed, and the planet was given the space to breathe again. It represents our hope, and our goal.
               </p>
             </div>
 
             <div className="about-directives">
-              <h2 className="about-section-heading">CORE DATA INTEGRATIONS</h2>
-
-              <div className="directive-item">
-                <h3 className="directive-heading">ATMOSPHERIC MONITORING</h3>
-                <p className="directive-text">
-                  Integration with NASA's Earthdata and Copernicus Climate Change Service to visualize global greenhouse gas density, methane leaks, and cloud aerosol optical depth.
-                </p>
-              </div>
-
-              <div className="directive-item">
-                <h3 className="directive-heading">BIOSPHERIC TRACKING</h3>
-                <p className="directive-text">
-                  Processing normalized difference vegetation indices (NDVI) to calculate biological loss and recovery rates across protected zones and temperate rainforests.
-                </p>
-              </div>
-
-              <div className="directive-item">
-                <h3 className="directive-heading">CRYOSPHERIC ANALYSIS</h3>
-                <p className="directive-text">
-                  Real-time reporting on sea ice extent and glacial mass change, highlighting the long-term impact of rising global mean temperatures on sea level volatility.
-                </p>
-              </div>
+              <h2 className="about-section-heading">OMEGA // THE ANOMALY</h2>
+              <p className="about-text">
+                To your right is the Omega Timeline. It is a cautionary record of the path we are currently on. In this world, the anomalies were allowed to fester until they became irreversible. The red pulses you see are the dying heartbeats of a world that lost its battle with time. 
+              </p>
+              <br />
+              <p className="about-text">
+                Life has vanished from Omega. It remains as a silent, grey monument to the cost of inaction.
+              </p>
             </div>
 
             <div className="about-section about-section--full">
-              <h2 className="about-section-heading">OPEN DATA COMMITMENT</h2>
+              <h2 className="about-section-heading">THE MISSION</h2>
               <p className="about-text">
-                Transparency is at the heart of our methodology. All visualization pipelines are modular and source-audited against IPCC benchmarks. We are committed to fostering global climate literacy by ensuring our tool is accessible, reproducible, and strictly aligned with global sustainable development imperatives.
+                Our mission is to ensure that the Omega timeline remains a simulation, and that Alpha becomes our reality. The directives are the bridge. They are the last remaining tools we have to lock in a future where Earth remains vibrant, alive, and whole.
               </p>
             </div>
           </div>

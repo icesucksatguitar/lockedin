@@ -365,15 +365,26 @@ function EarthModel({ className, mirrored = false, onDotClick, cinematicPhase }:
 
       if (needsUpdate) {
         const currentPhase = phaseRef.current
-        const isAnomaly = currentPhase === 'anomaly'
-        const colorHex = isAnomaly ? 0xff3939 : 0x39ff84
+        
+        // Alpha vs Omega logic
+        const isOmega = mirrored
+        let colorHex = 0x39ff84 // default green
+        let showDots = currentPhase !== 'pre-anomaly'
 
-        if (dotWorldPositions.length === 3) {
+        if (isOmega) {
+          // Omega stays red/dangerous
+          colorHex = 0xff3939
+        } else {
+          // Alpha is red during anomaly, green thereafter
+          colorHex = currentPhase === 'anomaly' ? 0xff3939 : 0x39ff84
+        }
+
+        if (dotWorldPositions.length === dots.length) {
           camDir.copy(camera.position).normalize()
           dotWorldPositions.forEach((wp, i) => {
             wpClone.copy(wp).normalize()
             const facing = wpClone.dot(camDir) > 0.05
-            dotSprites[i].visible = facing
+            dotSprites[i].visible = facing && showDots
             dotSprites[i].material.color.setHex(colorHex)
           })
         }

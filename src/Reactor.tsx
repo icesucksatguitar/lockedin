@@ -9,6 +9,7 @@ const PHASES = [
   { id: 'chamber', type: 'image', content: chamberImg, duration: 5000 },
   { id: 'sage', type: 'image', content: sageImg, duration: 5000 },
   { id: 'brimstone', type: 'image', content: brimstoneImg, duration: 5000 },
+  { id: 'credits', type: 'credits', content: null, duration: 10000 },
 ]
 
 function Reactor() {
@@ -42,6 +43,14 @@ function Reactor() {
         {current.type === 'text' ? (
           <p className="reactor-lorem">Everything fell — Chamber, Sage, and Brimstone couldn’t hold the world together.
             The protector failed, nature faded, and the preserver watched it all turn to ruin.</p>
+        ) : current.type === 'credits' ? (
+          <div className="reactor-credits" style={{ textAlign: 'center', color: '#fff', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '3rem', zIndex: 10, fontFamily: 'monospace' }}>
+            <h2 style={{ fontSize: '3rem', letterSpacing: '0.15em', fontWeight: '300', textTransform: 'uppercase' }}>Thank You</h2>
+            <div style={{ fontSize: '1.2rem', lineHeight: '2.5', letterSpacing: '0.05em', color: '#ccc' }}>
+              <p>Programmer and Lead Director: <strong style={{ color: '#fff' }}>Yash Thakur</strong></p>
+              <p>Voicelines, Music and Art Director: <strong style={{ color: '#fff' }}>Priyansh Kuniyal</strong></p>
+            </div>
+          </div>
         ) : (
           <img src={current.content as string} className="reactor-agent-img" alt={current.id} />
         )}

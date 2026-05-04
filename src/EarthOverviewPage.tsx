@@ -6,7 +6,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
-
+import climateaction from "./assets/SDG's/climateaction-alpha1.jpg"
 import cloveImg from './assets/images/clove.png'
 
 const earthModelUrl = new URL('./assets/3D model/earth.glb', import.meta.url).href
@@ -89,9 +89,9 @@ type DotDef = {
 const ALPHA_DOTS: DotDef[] = [
   {
     pos: new THREE.Vector3(0.62, 0.48, 0.62).normalize(),
-    label: 'ALPHA-1', nodeId: 'QN-0042',
+    label: 'CLIMATE ACTION', nodeId: 'QN-0042',
     status: 'ONLINE', ping: '2ms', load: '14%', signal: '98%', freq: '128.4Hz',
-    lat: '43.2405° N', lng: '73.0685° W',
+    lat: '43.2405° N', lng: '73.0685° W', 
   },
   {
     pos: new THREE.Vector3(-0.5, -0.28, 0.82).normalize(),
@@ -160,7 +160,7 @@ function NodePanel({ dot, onClose }: { dot: DotDef; onClose: () => void }) {
           </div>
           <div className="node-panel__scan">
             <div className="node-panel__scan-lines" aria-hidden="true" />
-            <p className="node-panel__scan-label">QUANTUM RELAY ACTIVE</p>
+            <p className="node-panel__scan-label"><img src={climateaction} className='sdg-climate' width={600} height={300}></img></p>
             <p className="node-panel__scan-id">ID: {dot.nodeId}</p>
           </div>
           <div className="node-panel__footer-bar">

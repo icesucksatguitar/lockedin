@@ -43,7 +43,7 @@
   font-size: 0.6rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  cursor: pointer;
+  cursor: none;
   transition: color 0.3s ease;
   z-index: 10;
   pointer-events: auto;
@@ -174,31 +174,93 @@
 }
 
 @keyframes ai-unfold {
-  0% { transform: scaleX(0) scaleY(0.02); opacity: 0; }
-  50% { transform: scaleX(1) scaleY(0.02); opacity: 1; }
-  100% { transform: scaleX(1) scaleY(1); opacity: 1; }
+  0% {
+    transform: scaleX(0) scaleY(0.02);
+    opacity: 0;
+  }
+
+  50% {
+    transform: scaleX(1) scaleY(0.02);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 1;
+  }
 }
 
 @keyframes ai-fold {
-  0% { transform: scaleX(1) scaleY(1); opacity: 1; }
-  100% { transform: scaleX(0) scaleY(0.02); opacity: 0; }
+  0% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scaleX(0) scaleY(0.02);
+    opacity: 0;
+  }
 }
 
 @keyframes ai-unfold-centered {
-  0% { transform: translate(-50%, -50%) scaleX(0) scaleY(0.02); opacity: 0; }
-  50% { transform: translate(-50%, -50%) scaleX(1) scaleY(0.02); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scaleX(1) scaleY(1); opacity: 1; }
+  0% {
+    transform: translate(-50%, -50%) scaleX(0) scaleY(0.02);
+    opacity: 0;
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scaleX(1) scaleY(0.02);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scaleX(1) scaleY(1);
+    opacity: 1;
+  }
 }
 
 @keyframes ai-fold-centered {
-  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; filter: blur(0px); }
-  20% { transform: translate(-52%, -50%) skewX(10deg); opacity: 0.8; filter: blur(2px) brightness(1.5); border-color: white; }
-  40% { transform: translate(-48%, -50%) skewX(-10deg); opacity: 0.6; filter: blur(4px) brightness(2); background: rgba(255, 255, 255, 0.2); }
-  60% { transform: translate(-50%, -50%) scaleY(0.01) scaleX(1.2); opacity: 1; filter: brightness(3); background: white; }
-  100% { transform: translate(-50%, -50%) scaleY(0.01) scaleX(0); opacity: 0; }
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    filter: blur(0px);
+  }
+
+  20% {
+    transform: translate(-52%, -50%) skewX(10deg);
+    opacity: 0.8;
+    filter: blur(2px) brightness(1.5);
+    border-color: white;
+  }
+
+  40% {
+    transform: translate(-48%, -50%) skewX(-10deg);
+    opacity: 0.6;
+    filter: blur(4px) brightness(2);
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  60% {
+    transform: translate(-50%, -50%) scaleY(0.01) scaleX(1.2);
+    opacity: 1;
+    filter: brightness(3);
+    background: white;
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scaleY(0.01) scaleX(0);
+    opacity: 0;
+  }
 }
 
 @keyframes ai-typewriter {
-  0% { opacity: 0; transform: translateX(-15px); }
-  100% { opacity: 1; transform: translateX(0); }
+  0% {
+    opacity: 0;
+    transform: translateX(-15px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

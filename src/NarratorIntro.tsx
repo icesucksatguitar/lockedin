@@ -50,8 +50,7 @@ export default function NarratorIntro({ onComplete, onPhaseChange }: NarratorInt
     // Attempt to play as soon as it mounts
     audio.play().catch((err) => {
       console.error("Audio autoplay blocked by browser:", err)
-      // If blocked, we might just have to skip or wait for interaction,
-      // but since the user clicked to skip the loading screen, it should play.
+
     })
 
     const handleTimeUpdate = () => {
@@ -109,12 +108,12 @@ export default function NarratorIntro({ onComplete, onPhaseChange }: NarratorInt
       if (currentIndex >= targetText.length) {
         clearInterval(typingInterval)
       }
-    }, 80) // 80ms per character for slow pacing
+    }, 80)
 
     return () => clearInterval(typingInterval)
   }, [activeSubtitleIndex])
 
-  // Canvas Galaxy Shader Logic
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -161,7 +160,7 @@ export default function NarratorIntro({ onComplete, onPhaseChange }: NarratorInt
       }
 
       ctx.globalCompositeOperation = 'screen'
-      
+
       // Purple cloud orbiting slowly
       drawCloud('rgba(30, 10, 60, 0.4)', w * 0.7, Math.sin(time) * w * 0.2, Math.cos(time) * h * 0.2)
       // Blue cloud
@@ -212,7 +211,7 @@ export default function NarratorIntro({ onComplete, onPhaseChange }: NarratorInt
       <div className={`narrator-scene__background ${fading ? 'narrator-scene__background--fade-out' : ''}`}>
         <canvas ref={canvasRef} className="narrator-scene__canvas" />
       </div>
-      
+
       <div className="narrator-scene__subtitles">
         {activeSubtitleIndex !== -1 && (
           <p className="narrator-scene__subtitle-text">
@@ -238,9 +237,9 @@ export default function NarratorIntro({ onComplete, onPhaseChange }: NarratorInt
           </div>
         </div>
       )}
-      
+
       <audio ref={audioRef} src={voicelineUrl} />
-      
+
       <button className="narrator-scene__skip" onClick={handleSkip}>
         skip transmission
       </button>
